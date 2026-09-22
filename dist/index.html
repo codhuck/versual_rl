@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VersualRL: closed-loop verbal reinforcement learning with visual execution feedback for task-level robot planning.">
+  <meta name="theme-color" content="#ffffff">
+  <title>VersualRL — Visual Feedback for Task-Level Robot Planning</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5eff'/%3E%3Cpath d='M16 18l16 29 16-29h-9L32 33l-7-15z' fill='white'/%3E%3Ccircle cx='32' cy='47' r='4' fill='%23ffc857'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reading-progress" aria-hidden="true"><span></span></div>
+
+  <main>
+    <header class="hero">
+      <div class="eyebrow">IROS 2026 · Physical Robot Learning</div>
+      <h1><span>VersualRL</span>: Closed-Loop Verbal Reinforcement Learning with Visual Execution Feedback for Task-Level Robot Planning</h1>
+
+      <div class="authors" aria-label="Authors">
+        <a href="mailto:dmitrii.plotnikov2@skoltech.ru">Dmitrii Plotnikov<sup>*</sup></a>
+        <a href="mailto:iaroslav.kolomiets@skoltech.ru">Iaroslav Kolomiets<sup>*</sup></a>
+        <a href="mailto:dmitrii.maliukov@skoltech.ru">Dmitrii Maliukov<sup>*</sup></a>
+        <a href="mailto:dmitrij.kosenkov@skoltech.ru">Dmitrij Kosenkov<sup>*</sup></a>
+        <a href="mailto:daniia.zinniatulina@skoltech.ru">Daniia Zinniatullina</a>
+        <a href="mailto:artem.trandofilov@skoltech.ru">Artem Trandofilov</a>
+        <a href="mailto:georgii.gazaryan@skoltech.ru">Georgii Gazaryan</a>
+        <a href="mailto:kirill.bogatikov@skoltech.ru">Kirill Bogatikov</a>
+        <a href="mailto:timofei.kozlov@skoltech.ru">Timofei Kozlov</a>
+        <a href="mailto:mikhail.konenkov@skoltech.ru">Mikhail Konenkov</a>
+        <a href="mailto:m.altamirano@skoltech.ru">Miguel Altamirano Cabrera</a>
+        <a href="mailto:d.tsetserukou@skoltech.ru">Dzmitry Tsetserukou</a>
+      </div>
+
+      <p class="affiliation">Intelligent Space Robotics Laboratory · Skolkovo Institute of Science and Technology</p>
+      <p class="equal"><sup>*</sup> Equal contribution</p>
+
+      <nav class="project-links" aria-label="Project resources">
+        <a class="button primary" href="assets/versualrl-paper.pdf" target="_blank" rel="noopener">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6M9 9h2"/></svg>
+          Paper
+        </a>
+        <a class="button" href="#overview-video">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          Video
+        </a>
+        <a class="button" href="#citation">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 9H4v6h6V9c0-3 2-5 5-5M18 9h-4v6h6V9c0-3-2-5-5-5"/></svg>
+          Cite
+        </a>
+      </nav>
+    </header>
+
+    <section id="overview-video" class="media-section" aria-labelledby="video-heading">
+      <h2 id="video-heading" class="sr-only">Project overview video</h2>
+      <div class="video-frame">
+        <video controls playsinline preload="metadata" poster="assets/video-poster.jpg">
+          <source src="assets/versualrl-overview.mp4" type="video/mp4">
+          Your browser does not support embedded video.
+        </video>
+      </div>
+      <p class="caption">VersualRL turns grounded visual critique into transparent Behavior Tree updates on a physical mobile robot.</p>
+    </section>
+
+    <section class="section abstract" id="abstract">
+      <p class="section-kicker">Overview</p>
+      <h2>Learning from what the robot actually did</h2>
+      <p class="lead">VersualRL closes the gap between a symbolic plan and its physical execution. A vision-language critic observes the robot, identifies what failed and why, and gives structured feedback to an LLM actor that edits the executable Behavior Tree.</p>
+      <p>Both foundation models remain frozen during deployment. Learning happens through discrete, human-readable changes to the policy—without online gradient optimization, a simulator, or an opaque neural controller. A human-verified episode score anchors each update in the true task outcome.</p>
+    </section>
+
+    <section class="section" id="method">
+      <p class="section-kicker">Method</p>
+      <h2>A closed loop from execution to refinement</h2>
+      <figure class="figure wide">
+        <img src="assets/architecture.webp" alt="VersualRL closed-loop architecture connecting robot execution, a VLM critic, human oversight, and an LLM actor." loading="lazy">
+        <figcaption>The VLM critic combines visual snapshots with Behavior Tree traces. The LLM actor then applies targeted, interpretable edits using the critic report and the human-verified score.</figcaption>
+      </figure>
+
+      <div class="steps" aria-label="VersualRL loop">
+        <article><span>01</span><h3>Execute</h3><p>Run the current Behavior Tree on the physical robot.</p></article>
+        <article><span>02</span><h3>Critique</h3><p>Ground failures in images, traces, severity, and confidence.</p></article>
+        <article><span>03</span><h3>Refine</h3><p>Patch the symbolic policy and carry the lesson into the next episode.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="platform">
+      <p class="section-kicker">Physical setup</p>
+      <h2>Real logistics, real execution uncertainty</h2>
+      <div class="split-figures">
+        <figure class="figure">
+          <div class="image-pad"><img src="assets/robot.webp" alt="Custom omnidirectional mobile robot with gripper, LiDAR, onboard computer, controller, battery, and emergency stop." loading="lazy"></div>
+          <figcaption>A custom omnidirectional mobile manipulator with a servo-actuated gripper and auxiliary vacuum channel.</figcaption>
+        </figure>
+        <figure class="figure">
+          <div class="image-pad"><img src="assets/field.webp" alt="Experimental Eurobot field with start area, load and unload zones, and movable shelf." loading="lazy"></div>
+          <figcaption>The robot transports oriented blocks, relocates a shelf, and returns to the finish area under a time constraint.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section results" id="results">
+      <p class="section-kicker">Results</p>
+      <h2>Domain alignment matters more than model scale</h2>
+      <p class="lead">Across five field layouts and ten sequential episodes, structured visual feedback produces faster and more stable policy improvement than the scalar score alone.</p>
+
+      <div class="takeaways">
+        <article><strong>3B &gt; 7B</strong><span>Task-specific fine-tuning makes the smaller Qwen critic more stable and actionable.</span></article>
+        <article><strong>Best final score</strong><span>Gemini with structured block information converges fastest and finishes highest.</span></article>
+        <article><strong>Interpretable updates</strong><span>The actor changes explicit BT nodes, parameters, retries, and subtree structure.</span></article>
+      </div>
+
+      <div class="chart-grid">
+        <figure class="figure"><img src="assets/score.webp" alt="Mean human-verified episode score across ten episodes." loading="lazy"><figcaption>Human-verified score ↑</figcaption></figure>
+        <figure class="figure"><img src="assets/recall.webp" alt="Mean issue detection recall across ten episodes." loading="lazy"><figcaption>Issue detection recall ↑</figcaption></figure>
+        <figure class="figure"><img src="assets/confidence.webp" alt="Mean critic confidence across ten episodes." loading="lazy"><figcaption>Confidence stability ↑</figcaption></figure>
+        <figure class="figure"><img src="assets/alarm.webp" alt="Mean human alarm rate across ten episodes." loading="lazy"><figcaption>Human alarm rate ↓ as policies improve</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section qualitative" id="analysis">
+      <p class="section-kicker">Inside one update</p>
+      <h2>Critique that points to the right part of the policy</h2>
+      <figure class="figure wide">
+        <img src="assets/critic-episode.webp" alt="Representative episode showing robot trajectory, visual inputs, critic feedback, and impact issue attribution." loading="lazy">
+        <figcaption>The critic identifies the key failure and attributes it to the relevant impact category and Behavior Tree node, enabling a focused correction.</figcaption>
+      </figure>
+      <figure class="figure wide compact-top">
+        <img src="assets/bt-evolution.webp" alt="Before-and-after Behavior Tree code showing a conservative policy update under perceptual uncertainty." loading="lazy">
+        <figcaption>When color perception is uncertain, the actor treats the critique as a hypothesis and applies a conservative, trace-grounded patch instead of globally replanning.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section conclusion">
+      <p class="section-kicker">Takeaway</p>
+      <blockquote>Task-level robot learning can remain transparent: observe the real execution, explain the failure, and update the symbolic strategy.</blockquote>
+      <p>VersualRL shows that closed-loop adaptation on physical hardware does not require end-to-end differentiable policy learning. Its current limits—snapshot-based temporal context, critic grounding, and a fixed node library—point directly toward longer video reasoning, trace-aware root-cause analysis, and broader robot embodiments.</p>
+    </section>
+
+    <section class="section citation" id="citation">
+      <div class="citation-heading">
+        <div><p class="section-kicker">Citation</p><h2>BibTeX</h2></div>
+        <button class="copy-button" type="button" data-copy="bibtex" aria-label="Copy BibTeX citation">Copy</button>
+      </div>
+      <pre id="bibtex"><code>@article{plotnikov2026versualrl,
+  title   = {VersualRL: Closed-Loop Verbal Reinforcement Learning with
+             Visual Execution Feedback for Task-Level Robot Planning},
+  author  = {Plotnikov, Dmitrii and Kolomiets, Iaroslav and Maliukov, Dmitrii
+             and Kosenkov, Dmitrij and Zinniatullina, Daniia and Trandofilov, Artem
+             and Gazaryan, Georgii and Bogatikov, Kirill and Kozlov, Timofei
+             and Konenkov, Mikhail and Cabrera, Miguel Altamirano
+             and Tsetserukou, Dzmitry},
+  year    = {2026}
+}</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>VersualRL · Intelligent Space Robotics Laboratory · Skoltech</p>
+    <a href="#" aria-label="Back to top">Back to top ↑</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
