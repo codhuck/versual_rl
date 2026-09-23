@@ -135,16 +135,14 @@ h3 { margin-bottom: 5px; font-size: 1.05rem; font-weight: 800; }
   border-radius: 5px;
 }
 .reset-logo img {
-  position: absolute;
-  top: -72px;
-  left: -4px;
-  width: 182px;
-  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 49%;
 }
 .team-credit-copy { display: block; min-width: 0; line-height: 1.35; }
 .team-credit strong { display: block; font-size: .91rem; }
-.team-credit strong a { color: #d9401d; border-bottom: 1px solid rgba(217,64,29,.3); }
-.team-credit strong a:hover { color: #a82d13; border-color: currentColor; }
+.team-name { color: #d9401d; }
 .team-credit small { display: block; margin-top: 3px; color: #61758a; font-size: .76rem; line-height: 1.4; }
 
 .project-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
