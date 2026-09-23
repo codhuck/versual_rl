@@ -7,9 +7,6 @@
   <meta name="theme-color" content="#ffffff">
   <title>VersualRL — Visual Feedback for Task-Level Robot Planning</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5eff'/%3E%3Cpath d='M16 18l16 29 16-29h-9L32 33l-7-15z' fill='white'/%3E%3Ccircle cx='32' cy='47' r='4' fill='%23ffc857'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,46 +14,52 @@
 
   <main>
     <header class="hero">
-      <div class="eyebrow">IROS 2026 · Physical Robot Learning</div>
-      <h1><span>VersualRL</span>: Closed-Loop Verbal Reinforcement Learning with Visual Execution Feedback for Task-Level Robot Planning</h1>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">IROS 2026&nbsp;&nbsp;/&nbsp;&nbsp;SKOLTECH&nbsp;&nbsp;/&nbsp;&nbsp;INTELLIGENT SPACE ROBOTICS LABORATORY</div>
+          <h1><span>VersualRL</span> Closed-Loop Verbal Reinforcement Learning <small>with Visual Execution Feedback for Task-Level Robot Planning</small></h1>
 
-      <div class="authors" aria-label="Authors">
-        <a href="mailto:dmitrii.plotnikov2@skoltech.ru">Dmitrii Plotnikov<sup>*</sup></a>
-        <a href="mailto:iaroslav.kolomiets@skoltech.ru">Iaroslav Kolomiets<sup>*</sup></a>
-        <a href="mailto:dmitrii.maliukov@skoltech.ru">Dmitrii Maliukov<sup>*</sup></a>
-        <a href="mailto:dmitrij.kosenkov@skoltech.ru">Dmitrij Kosenkov<sup>*</sup></a>
-        <a href="mailto:daniia.zinniatulina@skoltech.ru">Daniia Zinniatullina</a>
-        <a href="mailto:artem.trandofilov@skoltech.ru">Artem Trandofilov</a>
-        <a href="mailto:georgii.gazaryan@skoltech.ru">Georgii Gazaryan</a>
-        <a href="mailto:kirill.bogatikov@skoltech.ru">Kirill Bogatikov</a>
-        <a href="mailto:timofei.kozlov@skoltech.ru">Timofei Kozlov</a>
-        <a href="mailto:mikhail.konenkov@skoltech.ru">Mikhail Konenkov</a>
-        <a href="mailto:m.altamirano@skoltech.ru">Miguel Altamirano Cabrera</a>
-        <a href="mailto:d.tsetserukou@skoltech.ru">Dzmitry Tsetserukou</a>
+          <div class="authors" aria-label="Authors">
+            <a href="mailto:dmitrii.plotnikov2@skoltech.ru">Dmitrii Plotnikov<sup>*</sup></a>
+            <a href="mailto:iaroslav.kolomiets@skoltech.ru">Iaroslav Kolomiets<sup>*</sup></a>
+            <a href="mailto:dmitrii.maliukov@skoltech.ru">Dmitrii Maliukov<sup>*</sup></a>
+            <a href="mailto:dmitrij.kosenkov@skoltech.ru">Dmitrij Kosenkov<sup>*</sup></a>
+            <a href="mailto:daniia.zinniatulina@skoltech.ru">Daniia Zinniatullina</a>
+            <a href="mailto:artem.trandofilov@skoltech.ru">Artem Trandofilov</a>
+            <a href="mailto:georgii.gazaryan@skoltech.ru">Georgii Gazaryan</a>
+            <a href="mailto:kirill.bogatikov@skoltech.ru">Kirill Bogatikov</a>
+            <a href="mailto:timofei.kozlov@skoltech.ru">Timofei Kozlov</a>
+            <a href="mailto:mikhail.konenkov@skoltech.ru">Mikhail Konenkov</a>
+            <a href="mailto:m.altamirano@skoltech.ru">Miguel Altamirano Cabrera</a>
+            <a href="mailto:d.tsetserukou@skoltech.ru">Dzmitry Tsetserukou</a>
+          </div>
+
+          <p class="affiliation">Skolkovo Institute of Science and Technology, Moscow, Russia</p>
+          <p class="equal"><sup>*</sup> Equal contribution</p>
+        </div>
+
+        <nav class="project-links" aria-label="Project resources">
+          <a class="button primary" href="assets/versualrl-paper.pdf" target="_blank" rel="noopener">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6M9 9h2"/></svg>
+            <span>Paper</span>
+          </a>
+          <a class="button" href="#overview-video">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span>Watch video</span>
+          </a>
+          <a class="button" href="https://github.com/Lolotun/verbal_rl" target="_blank" rel="noopener noreferrer">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6M15 6l6 6-6 6"/></svg>
+            <span>Code</span>
+          </a>
+          <a class="button" href="#citation">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 9H4v6h6V9c0-3 2-5 5-5M18 9h-4v6h6V9c0-3-2-5-5-5"/></svg>
+            <span>Cite</span>
+          </a>
+        </nav>
       </div>
-
-      <p class="affiliation">Intelligent Space Robotics Laboratory · Skolkovo Institute of Science and Technology</p>
-      <p class="equal"><sup>*</sup> Equal contribution</p>
-
-      <nav class="project-links" aria-label="Project resources">
-        <a class="button primary" href="assets/versualrl-paper.pdf" target="_blank" rel="noopener">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6M9 9h2"/></svg>
-          Paper
-        </a>
-        <a class="button" href="#overview-video">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          Video
-        </a>
-        <a class="button" href="https://github.com/Lolotun/verbal_rl" target="_blank" rel="noopener noreferrer">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6M15 6l6 6-6 6"/></svg>
-          Code
-        </a>
-        <a class="button" href="#citation">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 9H4v6h6V9c0-3 2-5 5-5M18 9h-4v6h6V9c0-3-2-5-5-5"/></svg>
-          Cite
-        </a>
-      </nav>
     </header>
+
+    <div class="poster-claim">Visual execution feedback turns robot failures into interpretable Behavior Tree updates.</div>
 
     <section id="overview-video" class="media-section" aria-labelledby="video-heading">
       <h2 id="video-heading" class="sr-only">Project overview video</h2>
