@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#ffffff">
   <title>VersualRL — Visual Feedback for Task-Level Robot Planning</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5eff'/%3E%3Cpath d='M16 18l16 29 16-29h-9L32 33l-7-15z' fill='white'/%3E%3Ccircle cx='32' cy='47' r='4' fill='%23ffc857'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
@@ -87,6 +87,41 @@
       <p>Both foundation models remain frozen during deployment. Learning happens through discrete, human-readable changes to the policy—without online gradient optimization, a simulator, or an opaque neural controller. A human-verified episode score anchors each update in the true task outcome.</p>
     </section>
 
+    <section class="section" id="framework">
+      <p class="section-kicker">Under the hood</p>
+      <h2>What actually learns in VersualRL?</h2>
+      <p class="lead">The foundation models do not change during robot operation. The evolving object is the executable task policy itself: a Behavior Tree assembled from expert-designed nodes and rewritten between episodes.</p>
+
+      <div class="component-grid">
+        <article>
+          <span class="component-tag">Policy</span>
+          <h3>Behavior Tree</h3>
+          <p>Stores the current task strategy as explicit nodes, parameters, retries, sequences, and reusable subtrees. This is the only component updated during deployment.</p>
+        </article>
+        <article>
+          <span class="component-tag">Actor</span>
+          <h3>LLM policy editor</h3>
+          <p>Receives the current BT, task and environment definitions, the node library, authoring rules, critic feedback, score history, and proposes a syntactically valid patch.</p>
+        </article>
+        <article>
+          <span class="component-tag">Critic</span>
+          <h3>VLM execution analyst</h3>
+          <p>Combines field images with BT traces. It produces evidence-grounded critique, an issue-severity alarm score, and an explicit confidence estimate.</p>
+        </article>
+        <article>
+          <span class="component-tag">Oversight</span>
+          <h3>Human verification</h3>
+          <p>Confirms the physical outcome, computes the rule-based episode score, and intervenes only when the critic flags a severe or uncertain situation.</p>
+        </article>
+      </div>
+
+      <div class="equation-card" aria-label="Behavior Tree update equation">
+        <span>Episode update</span>
+        <strong>BT<sub>k+1</sub> = A(BT<sub>k</sub>, F<sub>k</sub>, R<sub>k</sub>, H<sub>k</sub>)</strong>
+        <p>The actor combines the current policy with the final critic report <em>F</em>, human-verified score <em>R</em>, and prior episode history <em>H</em>.</p>
+      </div>
+    </section>
+
     <section class="section" id="method">
       <p class="section-kicker">Method</p>
       <h2>A closed loop from execution to refinement</h2>
@@ -99,6 +134,20 @@
         <article><span>01</span><h3>Execute</h3><p>Run the current Behavior Tree on the physical robot.</p></article>
         <article><span>02</span><h3>Critique</h3><p>Ground failures in images, traces, severity, and confidence.</p></article>
         <article><span>03</span><h3>Refine</h3><p>Patch the symbolic policy and carry the lesson into the next episode.</p></article>
+      </div>
+
+      <div class="subsection-heading">
+        <p class="section-kicker">Critic protocol</p>
+        <h3>Three views of every physical episode</h3>
+      </div>
+      <div class="mode-grid">
+        <article><span>Initial</span><p>Before motion, the critic inspects the starting image for setup errors, misplaced objects, or unsafe conditions.</p></article>
+        <article><span>Intermediate</span><p>After each executed subtree, it receives a new image and the corresponding BT trace, while accumulating episodic memory.</p></article>
+        <article><span>Final</span><p>At termination, it analyzes the final scene, complete trace, and prior observations to produce the report used for the next BT update.</p></article>
+      </div>
+      <div class="threshold-note">
+        <strong>Human-in-the-loop trigger</strong>
+        <span>Notify or pause when alarm severity <em>s ≥ 0.5</em> or critic confidence <em>c &lt; 0.3</em>. Scores above 0.7 represent severe, safety-critical issues.</span>
       </div>
     </section>
 
@@ -115,12 +164,81 @@
           <figcaption>The robot transports oriented blocks, relocates a shelf, and returns to the finish area under a time constraint.</figcaption>
         </figure>
       </div>
+
+      <div class="task-specs" aria-label="Experimental task requirements">
+        <article><strong>≤ 4 blocks</strong><span>Maximum transport batch per cycle</span></article>
+        <article><strong>150 × 50 × 30 mm</strong><span>Wooden block dimensions</span></article>
+        <article><strong>Color = orientation</strong><span>Orange face upward means an invalid placement</span></article>
+        <article><strong>Finish condition</strong><span>Move the shelf, complete deliveries, and return to the finish area</span></article>
+      </div>
+    </section>
+
+    <section class="section protocol" id="protocol">
+      <p class="section-kicker">Evaluation protocol</p>
+      <h2>Five feedback settings, 250 physical episodes</h2>
+      <p class="lead">Each configuration was evaluated on five field layouts with varying block orientations. The policy then evolved through ten sequential episodes per layout, yielding 50 robot episodes per setting.</p>
+
+      <div class="protocol-stats">
+        <article><strong>5</strong><span>critic configurations</span></article>
+        <article><strong>5</strong><span>field layouts</span></article>
+        <article><strong>10</strong><span>sequential episodes</span></article>
+        <article><strong>250</strong><span>evaluation episodes total</span></article>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Configuration</th><th>Visual critic</th><th>Additional signal</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Configuration">No critic</td><td data-label="Visual critic">—</td><td data-label="Additional signal">BT trace + score <em>R</em></td><td data-label="Purpose">Tests whether a scalar outcome alone can guide refinement.</td></tr>
+            <tr><td data-label="Configuration">Qwen2.5-VL-7B</td><td data-label="Visual critic">Untuned</td><td data-label="Additional signal">Images + traces</td><td data-label="Purpose">Measures generic model scale without domain adaptation.</td></tr>
+            <tr><td data-label="Configuration">Qwen2.5-VL-3B</td><td data-label="Visual critic">LoRA fine-tuned</td><td data-label="Additional signal">Images + traces</td><td data-label="Purpose">Tests task-aligned critique with a smaller open model.</td></tr>
+            <tr><td data-label="Configuration">Gemini-3-Pro-Preview</td><td data-label="Visual critic">Untuned MLLM</td><td data-label="Additional signal">Images + traces</td><td data-label="Purpose">Evaluates stronger general multimodal and spatial reasoning.</td></tr>
+            <tr><td data-label="Configuration">Gemini + BlockInfo</td><td data-label="Visual critic">Untuned MLLM</td><td data-label="Additional signal">Color/orientation state</td><td data-label="Purpose">Separates perceptual ambiguity from symbolic policy reasoning.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="paper-note">Reproducibility note: the Gemini preview endpoint used during data collection was discontinued on March 9, 2026; the reported curves correspond to that historical model version.</p>
+
+      <div class="training-panel">
+        <div>
+          <p class="section-kicker">Open critic adaptation</p>
+          <h3>Qwen2.5-VL-3B fine-tuning</h3>
+          <p>The critic was trained on annotated execution evidence rather than generic captions. Each example paired a field image and BT trace with a target critique following the paper’s severity rubric.</p>
+        </div>
+        <dl>
+          <div><dt>Dataset</dt><dd>88 episodes: 65 train / 23 validation</dd></div>
+          <div><dt>Adapter</dt><dd>LoRA rank 16, α 16, dropout 0.15</dd></div>
+          <div><dt>Optimization</dt><dd>AdamW, 5 × 10<sup>−5</sup>, effective batch 8</dd></div>
+          <div><dt>Selection</dt><dd>Lowest validation loss, near epoch 16</dd></div>
+          <div><dt>Compute</dt><dd>1× RTX 4090 24 GB, approximately 7 hours</dd></div>
+        </dl>
+      </div>
+
+      <div class="score-panel">
+        <div><p class="section-kicker">Ground-truth outcome</p><h3>Human-verified score R</h3></div>
+        <ul>
+          <li><span>Operating time</span><strong>−1 / second</strong></li>
+          <li><span>Timeout after 150 s</span><strong>−20</strong></li>
+          <li><span>Correctly placed block</span><strong>+10</strong></li>
+          <li><span>Complete batch of four</span><strong>+10 bonus</strong></li>
+          <li><span>Incorrectly placed block</span><strong>−5</strong></li>
+          <li><span>Block outside every zone</span><strong>−10</strong></li>
+          <li><span>Correct final robot position</span><strong>+20</strong></li>
+        </ul>
+      </div>
     </section>
 
     <section class="section results" id="results">
       <p class="section-kicker">Results</p>
       <h2>Domain alignment matters more than model scale</h2>
       <p class="lead">Across five field layouts and ten sequential episodes, structured visual feedback produces faster and more stable policy improvement than the scalar score alone.</p>
+
+      <div class="metric-definitions">
+        <article><strong>R</strong><span>Rule-based, human-verified task score measuring physical completion quality.</span></article>
+        <article><strong>IDR = N<sub>TP</sub> / (N<sub>TP</sub> + N<sub>FN</sub>)</strong><span>Issue Detection Recall: the fraction of ground-truth execution issues detected by the critic.</span></article>
+        <article><strong>Confidence</strong><span>How consistently the critic reports certainty across sequential episodes.</span></article>
+        <article><strong>Human alarm rate</strong><span>How often execution requires attention because of severity or uncertainty.</span></article>
+      </div>
 
       <div class="takeaways">
         <article><strong>3B &gt; 7B</strong><span>Task-specific fine-tuning makes the smaller Qwen critic more stable and actionable.</span></article>
@@ -147,6 +265,27 @@
         <img src="assets/bt-evolution.webp" alt="Before-and-after Behavior Tree code showing a conservative policy update under perceptual uncertainty." loading="lazy">
         <figcaption>When color perception is uncertain, the actor treats the critique as a hypothesis and applies a conservative, trace-grounded patch instead of globally replanning.</figcaption>
       </figure>
+
+      <div class="policy-patch">
+        <p class="section-kicker">What changed in the executable policy</p>
+        <h3>A conservative patch under unreliable color perception</h3>
+        <ol>
+          <li><strong>Removed a risky operation.</strong> The actor disabled <code>RotateBlocks(mask=1111)</code> to avoid time overhead and accidental mis-rotations.</li>
+          <li><strong>Fixed retry semantics.</strong> It wrapped <code>CursorSequence</code> inside a <code>Sequence</code> under <code>RetryUntilSuccessful</code>.</li>
+          <li><strong>Localized recovery.</strong> It split the strategy into transactional Load–Transport–Unload subtrees, preventing a failure in one zone pair from restarting unrelated work.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section limitations" id="limitations">
+      <p class="section-kicker">Limitations and next steps</p>
+      <h2>What the current system still cannot see</h2>
+      <div class="limitations-grid">
+        <article><span>01</span><h3>Short temporal context</h3><p>Snapshot-based critique can miss latent faults whose consequences appear several BT steps after the original mistake.</p></article>
+        <article><span>02</span><h3>Perceptual bottleneck</h3><p>An insufficiently grounded critic can generate the wrong causal hypothesis. Conservative actor updates improve safety but may sacrifice optimality.</p></article>
+        <article><span>03</span><h3>Evaluation scope</h3><p>The study uses one mobile manipulation platform, one warehouse-style task, and a fixed expert-designed node library.</p></article>
+      </div>
+      <p class="future-work"><strong>Next:</strong> longer video context, trace-aware root-cause attribution, unseen layouts, richer manipulation tasks, new robot embodiments, and fully open-source critic configurations.</p>
     </section>
 
     <section class="section conclusion">
@@ -170,6 +309,10 @@
              and Tsetserukou, Dzmitry},
   year    = {2026}
 }</code></pre>
+      <div class="acknowledgements">
+        <strong>Research support</strong>
+        <p>This work was financially supported by RSF grant No. 24-41-02039. The authors thank Igor Duchinskii, Nikita Kuzmin, Mariya Lezina, and Georgii Demianchuk for assistance with data collection.</p>
+      </div>
     </section>
   </main>
 
